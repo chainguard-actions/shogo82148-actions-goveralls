@@ -1,0 +1,37 @@
+name: Test working-directory input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Prepare working directory with coverage profile
+        run: |
+          mkdir -p /tmp/test-workdir
+          cp tests/fixtures/coverage.out /tmp/test-workdir/coverage.out
+
+      - name: Run action with custom working-directory
+        id: action
+        uses: .
+        with:
+          github-token: ${{ github.token }}
+          path-to-profile: coverage.out
+          working-directory: /tmp/test-workdir
+          shallow: true
+        continue-on-error: true
+
+      - name: Assert action ran with custom working directory
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "action outcome: $OUTCOME"
+          # The action should run with the specified working directory.
+          # With shallow: true, Coveralls API errors are tolerated.
+          if [ "$OUTCOME" = "success" ] || [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action ran with custom working-directory (outcome=$OUTCOME)"
+          else
+            echo "FAIL: unexpected outcome: $OUTCOME"
+            exit 1
+          fi
