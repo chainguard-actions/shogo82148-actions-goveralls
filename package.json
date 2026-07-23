@@ -1,0 +1,36 @@
+{
+  "name": "actions-goveralls",
+  "version": "1.9.1",
+  "private": true,
+  "description": "Coveralls GitHub Action with Go integration powered by mattn/goveralls",
+  "main": "lib/main.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shogo82148/actions-goveralls.git"
+  },
+  "keywords": [
+    "actions",
+    "coveralls",
+    "go"
+  ],
+  "author": "Ichinose Shogo",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/exec": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^20.17.1",
+    "jest": "^29.7.0",
+    "prettier": "^3.4.2",
+    "ts-jest": "^29.2.5",
+    "typescript": ">=5.7.3"
+  }
+}

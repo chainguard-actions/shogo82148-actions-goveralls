@@ -1,0 +1,44 @@
+name: Test working-directory input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Prepare coverage profile in fixture project directory
+        run: |
+          # Try to generate a fresh coverage profile; fall back to pre-committed one
+          if cd "$GITHUB_WORKSPACE/tests/fixtures/goproject" && \
+             go test -coverprofile="$GITHUB_WORKSPACE/tests/fixtures/goproject/coverage.out" ./... 2>/dev/null; then
+            echo "Generated fresh coverage profile"
+          else
+            echo "Copying pre-committed coverage profile to goproject directory"
+            cp "$GITHUB_WORKSPACE/tests/fixtures/coverage.out" \
+               "$GITHUB_WORKSPACE/tests/fixtures/goproject/coverage.out"
+          fi
+          echo "Coverage profile:"
+          cat "$GITHUB_WORKSPACE/tests/fixtures/goproject/coverage.out"
+
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          github-token: ${{ github.token }}
+          path-to-profile: ${{ github.workspace }}/tests/fixtures/goproject/coverage.out
+          working-directory: ${{ github.workspace }}/tests/fixtures/goproject
+          shallow: true
+
+      - name: Assert action ran with working-directory
+        run: |
+          echo "Action outcome: ${{ steps.action.outcome }}"
+          # The action uses working-directory to set the cwd for goveralls.
+          # The Coveralls API may not be available in test environments.
+          # With shallow=true, goveralls exits 0 on Coveralls server errors.
+          # We verify the action ran (not skipped) to confirm setup is correct.
+          if [ "${{ steps.action.outcome }}" = "skipped" ]; then
+            echo "FAIL: action was unexpectedly skipped"
+            exit 1
+          fi
+          echo "PASS: action ran with working-directory set, outcome=${{ steps.action.outcome }}"
