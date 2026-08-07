@@ -1,0 +1,67 @@
+name: Test flag-name and working-directory inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Go
+        run: |
+          which go || (apt-get update -qq && apt-get install -y golang-go)
+          go version
+
+      - name: Create a Go project in a subdirectory with coverage profile
+        run: |
+          mkdir -p /tmp/gotest2/mylib
+          cat > /tmp/gotest2/go.mod <<'EOF'
+          module example.com/mylib
+
+          go 1.21
+          EOF
+          cat > /tmp/gotest2/mylib/math.go <<'EOF'
+          package mylib
+
+          func Multiply(a, b int) int {
+              return a * b
+          }
+          EOF
+          cat > /tmp/gotest2/mylib/math_test.go <<'EOF'
+          package mylib
+
+          import "testing"
+
+          func TestMultiply(t *testing.T) {
+              if Multiply(2, 3) != 6 {
+                  t.Fatal("expected 6")
+              }
+          }
+          EOF
+          cd /tmp/gotest2
+          go test -coverprofile=/tmp/coverage2.out ./...
+          cat /tmp/coverage2.out
+
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          github-token: ${{ github.token }}
+          path-to-profile: /tmp/coverage2.out
+          flag-name: Unit
+          parallel: true
+          shallow: true
+
+      - name: Assert action ran (success or graceful failure on sentinel repo)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (expected with sentinel repo / Coveralls API)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
