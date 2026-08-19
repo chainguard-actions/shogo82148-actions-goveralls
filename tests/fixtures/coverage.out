@@ -1,0 +1,2 @@
+mode: set
+github.com/shogo82148/actions-goveralls/test.go:1.1,2.2 1 1

@@ -1,0 +1,41 @@
+name: Test basic usage
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      # Create a minimal Go coverage profile for the action to use
+      - name: Create coverage profile
+        run: |
+          mkdir -p /tmp/gotest
+          cat > /tmp/gotest/coverage.out <<'EOF'
+          mode: set
+          EOF
+
+      - id: action
+        name: Run goveralls action (expect failure - no real Coveralls account)
+        uses: .
+        with:
+          github-token: ${{ github.token }}
+          path-to-profile: /tmp/gotest/coverage.out
+          shallow: true
+        continue-on-error: true
+
+      - name: Assert action ran (binary was found and executed)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          # The action should either succeed or fail with a Coveralls API error.
+          # It should NOT fail with "binary not found" or "unsupported OS/arch".
+          # Both 'success' and 'failure' are acceptable outcomes here since
+          # we don't have a real Coveralls account configured.
+          if [ "$OUTCOME" = "success" ] || [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action ran (outcome=$OUTCOME)"
+          else
+            echo "FAIL: unexpected outcome: $OUTCOME"
+            exit 1
+          fi

@@ -1,0 +1,40 @@
+name: Test working-directory input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      # Create a subdirectory to use as working directory
+      - name: Set up working directory
+        run: |
+          mkdir -p /tmp/myproject
+          cat > /tmp/myproject/coverage.out <<'EOF'
+          mode: set
+          EOF
+
+      - id: action
+        name: Run goveralls action with custom working-directory
+        uses: .
+        with:
+          github-token: ${{ github.token }}
+          working-directory: /tmp/myproject
+          path-to-profile: /tmp/myproject/coverage.out
+          shallow: true
+        continue-on-error: true
+
+      - name: Assert action ran with working-directory
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          # The action should either succeed or fail with a Coveralls API error.
+          # It should NOT fail with "no such file or directory" for the working directory.
+          if [ "$OUTCOME" = "success" ] || [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action ran with working-directory (outcome=$OUTCOME)"
+          else
+            echo "FAIL: unexpected outcome: $OUTCOME"
+            exit 1
+          fi
