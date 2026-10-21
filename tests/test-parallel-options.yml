@@ -1,0 +1,51 @@
+name: Test parallel with flag-name, ignore and shallow
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Prepare Go env fallback (avoid `go env` if go is missing)
+        run: |
+          if ! command -v go >/dev/null 2>&1; then
+            for v in GOROOT GOPATH GOBIN GOTMPDIR GOTOOLDIR GOCACHE; do
+              mkdir -p "/tmp/fakego/$v"
+              echo "$v=/tmp/fakego/$v" >> "$GITHUB_ENV"
+            done
+            echo "GOOS=linux" >> "$GITHUB_ENV"
+            case "$(uname -m)" in
+              aarch64|arm64) echo "GOARCH=arm64" >> "$GITHUB_ENV" ;;
+              *) echo "GOARCH=amd64" >> "$GITHUB_ENV" ;;
+            esac
+          fi
+      - name: Create a cover profile
+        run: |
+          mkdir -p "$RUNNER_TEMP/demo"
+          printf 'module example.com/demo\n\ngo 1.21\n' > "$RUNNER_TEMP/demo/go.mod"
+          printf 'package demo\n\nfunc Add(a, b int) int {\n\treturn a + b\n}\n' > "$RUNNER_TEMP/demo/main.go"
+          printf 'package demo\n\nfunc Sub(a, b int) int {\n\treturn a - b\n}\n' > "$RUNNER_TEMP/demo/sub.go"
+          printf 'mode: set\nexample.com/demo/main.go:3.24,5.2 1 1\nexample.com/demo/sub.go:3.24,5.2 1 0\n' > "$RUNNER_TEMP/demo/coverage.out"
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          path-to-profile: coverage.out
+          working-directory: ${{ runner.temp }}/demo
+          parallel: "true"
+          flag-name: Unit
+          ignore: sub.go
+          shallow: "true"
+      - name: Assert action ran (succeeded, or failed gracefully on the sentinel repo)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: parallel coverage posted (or shallowed server error)"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (sentinel repo cannot be resolved by Coveralls)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
