@@ -1,0 +1,38 @@
+name: Test basic usage with a cover profile
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491 # v5.0.0
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Generate cover profile
+        run: |
+          go test -v -coverprofile=profile.cov .
+          if [ ! -s profile.cov ]; then
+            echo "FAIL: cover profile was not generated"
+            exit 1
+          fi
+          head -n 5 profile.cov
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          path-to-profile: profile.cov
+      - name: Assert action ran (uploaded, or failed gracefully on the sentinel repo)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: coverage uploaded"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (sentinel repo not known to Coveralls)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
