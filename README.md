@@ -6,16 +6,16 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 ## Versions
 
-| Version | Tag | Upstream commit |
-|---------|-----|-----------------|
-| v1.11.0 | [`v1.11.0`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/tree/v1.11.0) | [`9606dbc`](https://github.com/shogo82148/actions-goveralls/commit/9606dbc5ac5cf888a0e9ef901515c3cd516a2790) |
-| v1.11.1 | [`v1.11.1`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/tree/v1.11.1) | [`8781f5d`](https://github.com/shogo82148/actions-goveralls/commit/8781f5dd05b691c4dd042d5e859c11c73e0104fa) |
-| v1.11.2 | [`v1.11.2`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/tree/v1.11.2) | [`77a1912`](https://github.com/shogo82148/actions-goveralls/commit/77a1912dca42260ee3e97f61bd13ea7ef40baa93) |
-| v1.11.3 | [`v1.11.3`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/tree/v1.11.3) | [`daabb29`](https://github.com/shogo82148/actions-goveralls/commit/daabb2902148216a0b13c82107a6e67ed97f796e) |
-| v1.11.4 | [`v1.11.4`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/tree/v1.11.4) | [`4b30166`](https://github.com/shogo82148/actions-goveralls/commit/4b30166c2ac96ac557328a27874a16b777f9b8bd) |
-| v1.11.5 | [`v1.11.5`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/tree/v1.11.5) | [`548a2a7`](https://github.com/shogo82148/actions-goveralls/commit/548a2a7896df420c38df648845a5525a33f82585) |
-| v1.9.0 | [`v1.9.0`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/tree/v1.9.0) | [`785c9d6`](https://github.com/shogo82148/actions-goveralls/commit/785c9d68212c91196d3994652647f8721918ba11) |
-| v1.9.1 | [`v1.9.1`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/tree/v1.9.1) | [`e6875f8`](https://github.com/shogo82148/actions-goveralls/commit/e6875f831db61e6abffbd8df91a2eb6cd24b46c9) |
+| Version | Tag | Upstream commit | Hardening report |
+|---------|-----|-----------------|------------------|
+| v1.11.0 | [`v1.11.0`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/tree/v1.11.0) | [`9606dbc`](https://github.com/shogo82148/actions-goveralls/commit/9606dbc5ac5cf888a0e9ef901515c3cd516a2790) | [`HARDENING.md`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/blob/v1.11.0/HARDENING.md) |
+| v1.11.1 | [`v1.11.1`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/tree/v1.11.1) | [`8781f5d`](https://github.com/shogo82148/actions-goveralls/commit/8781f5dd05b691c4dd042d5e859c11c73e0104fa) | [`HARDENING.md`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/blob/v1.11.1/HARDENING.md) |
+| v1.11.2 | [`v1.11.2`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/tree/v1.11.2) | [`77a1912`](https://github.com/shogo82148/actions-goveralls/commit/77a1912dca42260ee3e97f61bd13ea7ef40baa93) | [`HARDENING.md`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/blob/v1.11.2/HARDENING.md) |
+| v1.11.3 | [`v1.11.3`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/tree/v1.11.3) | [`daabb29`](https://github.com/shogo82148/actions-goveralls/commit/daabb2902148216a0b13c82107a6e67ed97f796e) | [`HARDENING.md`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/blob/v1.11.3/HARDENING.md) |
+| v1.11.4 | [`v1.11.4`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/tree/v1.11.4) | [`4b30166`](https://github.com/shogo82148/actions-goveralls/commit/4b30166c2ac96ac557328a27874a16b777f9b8bd) | [`HARDENING.md`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/blob/v1.11.4/HARDENING.md) |
+| v1.11.5 | [`v1.11.5`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/tree/v1.11.5) | [`548a2a7`](https://github.com/shogo82148/actions-goveralls/commit/548a2a7896df420c38df648845a5525a33f82585) | [`HARDENING.md`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/blob/v1.11.5/HARDENING.md) |
+| v1.9.0 | [`v1.9.0`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/tree/v1.9.0) | [`785c9d6`](https://github.com/shogo82148/actions-goveralls/commit/785c9d68212c91196d3994652647f8721918ba11) | [`HARDENING.md`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/blob/v1.9.0/HARDENING.md) |
+| v1.9.1 | [`v1.9.1`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/tree/v1.9.1) | [`e6875f8`](https://github.com/shogo82148/actions-goveralls/commit/e6875f831db61e6abffbd8df91a2eb6cd24b46c9) | [`HARDENING.md`](https://github.com/chainguard-actions/shogo82148-actions-goveralls/blob/v1.9.1/HARDENING.md) |
 
 ## Privacy
 
